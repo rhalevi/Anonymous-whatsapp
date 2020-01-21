@@ -23,6 +23,8 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.hbb20.CountryCodePicker;
+
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -39,6 +41,9 @@ public class MainActivity extends AppCompatActivity {
 
 
         ListView lv = (ListView) findViewById(R.id.listView);
+
+        CountryCodePicker ccp = (CountryCodePicker) findViewById(R.id.ccp);
+        ccp.detectSIMCountry(true);
 
         final Switch useSmsSwitch = (Switch) findViewById(R.id.sms_switch);
         final Switch useCallsSwitch = (Switch) findViewById(R.id.calls_switch);
@@ -109,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Toast.makeText(getApplicationContext(), parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
                 final EditText phoneNumber = (EditText) findViewById(R.id.phoneNumberText);
+
                 String resolvedPhone = PhoneNumberResolver.resolve(parent.getItemAtPosition(position).toString(),"IL");
                 phoneNumber.setText(resolvedPhone);
             }

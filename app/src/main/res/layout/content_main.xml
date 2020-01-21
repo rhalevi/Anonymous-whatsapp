@@ -69,15 +69,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/phoneNumberText" />
 
+    <com.hbb20.CountryCodePicker
+        android:id="@+id/ccp"
+        android:layout_width="134dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="144dp"
+        app:layout_constraintBottom_toTopOf="@+id/SendButton"
+        app:layout_constraintEnd_toStartOf="@+id/phoneNumberText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/calls_switch" />
+
     <EditText
         android:id="@+id/phoneNumberText"
-        android:layout_width="248dp"
-        android:layout_height="71dp"
-        android:layout_marginStart="47dp"
-        android:layout_marginLeft="47dp"
+        android:layout_width="210dp"
+        android:layout_height="64dp"
         android:layout_marginTop="142dp"
-        android:layout_marginEnd="116dp"
-        android:layout_marginRight="116dp"
+        android:layout_marginEnd="20dp"
         android:layout_marginBottom="77dp"
         android:ems="10"
         android:hint="phone number"
@@ -85,7 +95,6 @@
         android:text="+972528543671"
         app:layout_constraintBottom_toTopOf="@+id/SendButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <ListView

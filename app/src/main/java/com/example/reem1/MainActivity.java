@@ -11,6 +11,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.provider.CallLog;
 import android.provider.Telephony;
+import android.telephony.PhoneNumberUtils;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,11 +24,14 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.Phonenumber;
 import com.hbb20.CountryCodePicker;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,7 +46,10 @@ public class MainActivity extends AppCompatActivity {
 
         ListView lv = (ListView) findViewById(R.id.listView);
 
-        CountryCodePicker ccp = (CountryCodePicker) findViewById(R.id.ccp);
+        final CountryCodePicker ccp = (CountryCodePicker) findViewById(R.id.ccp);
+        final EditText phoneNumber = (EditText) findViewById(R.id.phoneNumberText);
+
+        ccp.registerCarrierNumberEditText(phoneNumber);
         ccp.detectSIMCountry(true);
 
         final Switch useSmsSwitch = (Switch) findViewById(R.id.sms_switch);
@@ -88,11 +95,27 @@ public class MainActivity extends AppCompatActivity {
 
 
         final Button button = (Button) findViewById(R.id.SendButton);
-        final EditText phoneNumber = (EditText) findViewById(R.id.phoneNumberText);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse("https://api.whatsapp.com/send?phone="+phoneNumber.getText()));
+               // intent.setData(Uri.parse("https://api.whatsapp.com/send?phone="+phoneNumber.getText()));
+                String phone = phoneNumber.getText().toString();
+                if(phone.startsWith("+")){
+                    String currentDefaultCode = ccp.getSelectedCountryCode();
+                    if(!phone.substring(1).startsWith(currentDefaultCode)){
+                        try {
+                            Phonenumber.PhoneNumber parse = PhoneNumberUtil.getInstance().parse(phone, "");
+                            ccp.setCountryForPhoneCode(parse.getCountryCode());
+                        } catch (NumberParseException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                }else{
+                    ccp.detectSIMCountry(true);
+                }
+                intent.setData(Uri.parse("https://api.whatsapp.com/send?phone="+ccp.getFormattedFullNumber()));
                 startActivity(intent);
 
 
@@ -113,10 +136,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Toast.makeText(getApplicationContext(), parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
-                final EditText phoneNumber = (EditText) findViewById(R.id.phoneNumberText);
-
-                String resolvedPhone = PhoneNumberResolver.resolve(parent.getItemAtPosition(position).toString(),"IL");
-                phoneNumber.setText(resolvedPhone);
+                setPhoneInTextboxFromListView(parent, position);
             }
         });
     }
@@ -134,11 +154,17 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Toast.makeText(getApplicationContext(), parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
-                final EditText phoneNumber = (EditText) findViewById(R.id.phoneNumberText);
-                String resolvedPhone = PhoneNumberResolver.resolve(parent.getItemAtPosition(position).toString(),"IL");
-                phoneNumber.setText(resolvedPhone);
+                setPhoneInTextboxFromListView(parent, position);
             }
         });
+    }
+
+    private void setPhoneInTextboxFromListView(AdapterView<?> parent, int position) {
+        final EditText phoneNumber = (EditText) findViewById(R.id.phoneNumberText);
+        CountryCodePicker ccp = (CountryCodePicker) findViewById(R.id.ccp);
+        String countryNameCode = ccp.getSelectedCountryNameCode();
+        String resolvedPhone = PhoneNumberResolver.resolve(parent.getItemAtPosition(position).toString(), countryNameCode);
+        phoneNumber.setText(parent.getItemAtPosition(position).toString());
     }
 
     public LinkedHashSet<String> getAllSmsFromProvider() {

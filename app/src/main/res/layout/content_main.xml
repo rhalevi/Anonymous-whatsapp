@@ -32,12 +32,12 @@
         android:layout_marginTop="30dp"
         android:layout_marginEnd="218dp"
         android:layout_marginBottom="69dp"
-        android:text="Use incoming SMS"
+        android:text="Use SMS numbers"
         app:layout_constraintBottom_toTopOf="@+id/phoneNumberText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
-        tools:text="Use incoming SMS" />
+        tools:text="Use SMS numbers" />
 
     <Switch
         android:id="@+id/calls_switch"
@@ -89,9 +89,8 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="77dp"
         android:ems="10"
-        android:hint="phone number"
+        android:hint="Your phone number here"
         android:inputType="phone"
-        android:text="+972528543671"
         app:layout_constraintBottom_toTopOf="@+id/SendButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />

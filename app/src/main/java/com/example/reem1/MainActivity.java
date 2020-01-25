@@ -12,7 +12,6 @@ import androidx.appcompat.widget.Toolbar;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
 import android.provider.Telephony;
-import android.telephony.PhoneNumberUtils;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -133,11 +132,11 @@ public class MainActivity extends AppCompatActivity {
     private void loadCallsToListView() {
 
         ListView lv = (ListView) findViewById(R.id.listView);
-        final LinkedHashSet<String> allSms = getAllIncomingCalls();
+        final LinkedHashSet<PhoneRecord> allSms = getAllIncomingCalls();
         Toast.makeText(getApplicationContext(), "Number of calls loaded:  "+allSms.size(), Toast.LENGTH_SHORT).show();
-        List<String> list = new ArrayList<String>(allSms);
-        ArrayAdapter<String> itemsAdapter =
-                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list);
+        List<PhoneRecord> list = new ArrayList<>(allSms);
+        PhoneRecordAdapter itemsAdapter =
+                new PhoneRecordAdapter(this, list);
         lv.setAdapter(itemsAdapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -154,8 +153,8 @@ public class MainActivity extends AppCompatActivity {
         final LinkedHashSet<PhoneRecord> allSms = getAllSmsFromProvider();
         Toast.makeText(getApplicationContext(), "Number of sms loaded:  "+allSms.size(), Toast.LENGTH_SHORT).show();
         List<PhoneRecord> list = new ArrayList<>(allSms);
-        ArrayAdapter<PhoneRecord> itemsAdapter =
-                new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list);
+           PhoneRecordAdapter itemsAdapter =
+                new PhoneRecordAdapter(this, list);
         lv.setAdapter(itemsAdapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -202,8 +201,8 @@ public class MainActivity extends AppCompatActivity {
         return lstSms;
     }
 
-    public LinkedHashSet<String> getAllIncomingCalls() throws SecurityException {
-        LinkedHashSet<String> lstSms = new LinkedHashSet<String>();
+    public LinkedHashSet<PhoneRecord> getAllIncomingCalls() throws SecurityException {
+        LinkedHashSet<PhoneRecord> lstSms = new LinkedHashSet<PhoneRecord>();
         ContentResolver cr = this.getContentResolver();
 
         Cursor c = cr.query(CallLog.Calls.CONTENT_URI, // Official CONTENT_URI from docs
@@ -216,9 +215,11 @@ public class MainActivity extends AppCompatActivity {
 
         if (c.moveToFirst()) {
             for (int i = 0; i < totalCalls; i++) {
-                String sender = c.getString(0);
-                if(!filter(sender)) {
-                    lstSms.add(sender);
+                String senderPhone = c.getString(0);
+                String senderName = getContactName(senderPhone);
+                PhoneRecord phoneRecord = new PhoneRecord(senderPhone,senderName);
+                if(!filter(senderPhone)) {
+                    lstSms.add(new PhoneRecord(senderPhone,senderName));
                 }
                 c.moveToNext();
             }

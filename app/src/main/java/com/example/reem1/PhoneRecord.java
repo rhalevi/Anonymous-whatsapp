@@ -18,6 +18,9 @@ public class PhoneRecord {
     }
 
     public String getPhone() {
+        if(phone == null){
+            return "";
+        }
         return phone;
     }
 
@@ -26,6 +29,9 @@ public class PhoneRecord {
     }
 
     public String getName() {
+        if(name == null){
+            return "";
+        }
         return name;
     }
 

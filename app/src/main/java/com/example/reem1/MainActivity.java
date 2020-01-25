@@ -100,27 +100,30 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                // intent.setData(Uri.parse("https://api.whatsapp.com/send?phone="+phoneNumber.getText()));
                 String phone = phoneNumber.getText().toString();
-                if(phone.startsWith("+")){
-                    String currentDefaultCode = ccp.getSelectedCountryCode();
-                    if(!phone.substring(1).startsWith(currentDefaultCode)){
-                        try {
-                            Phonenumber.PhoneNumber parse = PhoneNumberUtil.getInstance().parse(phone, "");
-                            ccp.setCountryForPhoneCode(parse.getCountryCode());
-                        } catch (NumberParseException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-
-                }else{
-                    ccp.detectSIMCountry(true);
-                }
                 intent.setData(Uri.parse("https://api.whatsapp.com/send?phone="+ccp.getFormattedFullNumber()));
                 startActivity(intent);
 
 
             }
         });
+    }
+
+    private void normalizeContryCodeAccordingToGivenNumber(String phone, CountryCodePicker ccp) {
+        if(phone.startsWith("+")){
+            String currentDefaultCode = ccp.getSelectedCountryCode();
+            if(!phone.substring(1).startsWith(currentDefaultCode)){
+                try {
+                    Phonenumber.PhoneNumber parse = PhoneNumberUtil.getInstance().parse(phone, "");
+                    ccp.setCountryForPhoneCode(parse.getCountryCode());
+                } catch (NumberParseException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        }else{
+            ccp.detectSIMCountry(true);
+        }
     }
 
     private void loadCallsToListView() {
@@ -165,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
         String countryNameCode = ccp.getSelectedCountryNameCode();
         String resolvedPhone = PhoneNumberResolver.resolve(parent.getItemAtPosition(position).toString(), countryNameCode);
         phoneNumber.setText(parent.getItemAtPosition(position).toString());
+        normalizeContryCodeAccordingToGivenNumber(phoneNumber.getText().toString(),ccp);
     }
 
     public LinkedHashSet<String> getAllSmsFromProvider() {
@@ -172,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
         ContentResolver cr = this.getContentResolver();
 
         Cursor c = cr.query(Telephony.Sms.CONTENT_URI, // Official CONTENT_URI from docs
-                new String[] { Telephony.Sms.ADDRESS }, // Select body text
+                new String[] { Telephony.Sms.ADDRESS,Telephony.Sms.PERSON }, // Select body text
                 null,
                 null,
                 Telephony.Sms.Inbox.DEFAULT_SORT_ORDER); // Default sort order

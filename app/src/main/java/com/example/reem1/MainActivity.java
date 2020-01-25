@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
         ccp.registerCarrierNumberEditText(phoneNumber);
         ccp.detectSIMCountry(true);
+        ccp.setCountryPreference("US");
 
         final Switch useSmsSwitch = (Switch) findViewById(R.id.sms_switch);
         final Switch useCallsSwitch = (Switch) findViewById(R.id.calls_switch);
@@ -165,8 +166,6 @@ public class MainActivity extends AppCompatActivity {
     private void setPhoneInTextboxFromListView(AdapterView<?> parent, int position) {
         final EditText phoneNumber = (EditText) findViewById(R.id.phoneNumberText);
         CountryCodePicker ccp = (CountryCodePicker) findViewById(R.id.ccp);
-        String countryNameCode = ccp.getSelectedCountryNameCode();
-        String resolvedPhone = PhoneNumberResolver.resolve(parent.getItemAtPosition(position).toString(), countryNameCode);
         phoneNumber.setText(parent.getItemAtPosition(position).toString());
         normalizeContryCodeAccordingToGivenNumber(phoneNumber.getText().toString(),ccp);
     }

@@ -64,11 +64,7 @@ public class MainActivity extends AppCompatActivity {
                     loadSMSToListView();
                 }else{
                     Toast.makeText(getApplicationContext(), "Sms numbers lookup off", Toast.LENGTH_SHORT).show();
-                    ListView lv = (ListView) findViewById(R.id.listView);
-                    List<String> list = new ArrayList<String>();
-                    ArrayAdapter<String> adapter =
-                            new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, list);
-                    lv.setAdapter(adapter);
+                    clearListView();
                 }
             }
         });
@@ -83,11 +79,7 @@ public class MainActivity extends AppCompatActivity {
                     loadCallsToListView();
                 }else{
                     Toast.makeText(getApplicationContext(), "Call numbers lookup off", Toast.LENGTH_SHORT).show();
-                    ListView lv = (ListView) findViewById(R.id.listView);
-                    List<String> list = new ArrayList<String>();
-                    ArrayAdapter<String> adapter =
-                            new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, list);
-                    lv.setAdapter(adapter);
+                    clearListView();
                 }
             }
         });
@@ -99,14 +91,20 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
-               // intent.setData(Uri.parse("https://api.whatsapp.com/send?phone="+phoneNumber.getText()));
-                String phone = phoneNumber.getText().toString();
                 intent.setData(Uri.parse("https://api.whatsapp.com/send?phone="+ccp.getFormattedFullNumber()));
                 startActivity(intent);
 
 
             }
         });
+    }
+
+    private void clearListView() {
+        ListView lv = (ListView) findViewById(R.id.listView);
+        List<String> list = new ArrayList<String>();
+        ArrayAdapter<String> adapter =
+                new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, list);
+        lv.setAdapter(adapter);
     }
 
     private void normalizeContryCodeAccordingToGivenNumber(String phone, CountryCodePicker ccp) {

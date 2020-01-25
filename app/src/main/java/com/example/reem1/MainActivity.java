@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.provider.CallLog;
+import android.provider.ContactsContract;
 import android.provider.Telephony;
 import android.telephony.PhoneNumberUtils;
 import android.view.View;
@@ -29,12 +30,17 @@ import com.google.i18n.phonenumbers.Phonenumber;
 import com.hbb20.CountryCodePicker;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 
 public class MainActivity extends AppCompatActivity {
 
+    CountryCodePicker ccp = null;
+    Map<String,String> numberToPersonNameCache = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,12 +52,13 @@ public class MainActivity extends AppCompatActivity {
 
         ListView lv = (ListView) findViewById(R.id.listView);
 
-        final CountryCodePicker ccp = (CountryCodePicker) findViewById(R.id.ccp);
+        ccp = (CountryCodePicker) findViewById(R.id.ccp);
         final EditText phoneNumber = (EditText) findViewById(R.id.phoneNumberText);
 
         ccp.registerCarrierNumberEditText(phoneNumber);
         ccp.detectSIMCountry(true);
         ccp.setCountryPreference("US");
+
 
         final Switch useSmsSwitch = (Switch) findViewById(R.id.sms_switch);
         final Switch useCallsSwitch = (Switch) findViewById(R.id.calls_switch);
@@ -93,8 +100,6 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse("https://api.whatsapp.com/send?phone="+ccp.getFormattedFullNumber()));
                 startActivity(intent);
-
-
             }
         });
     }
@@ -146,11 +151,11 @@ public class MainActivity extends AppCompatActivity {
     private void loadSMSToListView() {
 
         ListView lv = (ListView) findViewById(R.id.listView);
-        final LinkedHashSet<String> allSms = getAllSmsFromProvider();
+        final LinkedHashSet<PhoneRecord> allSms = getAllSmsFromProvider();
         Toast.makeText(getApplicationContext(), "Number of sms loaded:  "+allSms.size(), Toast.LENGTH_SHORT).show();
-        List<String> list = new ArrayList<String>(allSms);
-        ArrayAdapter<String> itemsAdapter =
-                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list);
+        List<PhoneRecord> list = new ArrayList<>(allSms);
+        ArrayAdapter<PhoneRecord> itemsAdapter =
+                new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list);
         lv.setAdapter(itemsAdapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -163,17 +168,16 @@ public class MainActivity extends AppCompatActivity {
 
     private void setPhoneInTextboxFromListView(AdapterView<?> parent, int position) {
         final EditText phoneNumber = (EditText) findViewById(R.id.phoneNumberText);
-        CountryCodePicker ccp = (CountryCodePicker) findViewById(R.id.ccp);
         phoneNumber.setText(parent.getItemAtPosition(position).toString());
         normalizeContryCodeAccordingToGivenNumber(phoneNumber.getText().toString(),ccp);
     }
 
-    public LinkedHashSet<String> getAllSmsFromProvider() {
-        LinkedHashSet<String> lstSms = new LinkedHashSet<String>();
+    public LinkedHashSet<PhoneRecord> getAllSmsFromProvider() {
+        LinkedHashSet<PhoneRecord> lstSms = new LinkedHashSet<PhoneRecord>();
         ContentResolver cr = this.getContentResolver();
 
         Cursor c = cr.query(Telephony.Sms.CONTENT_URI, // Official CONTENT_URI from docs
-                new String[] { Telephony.Sms.ADDRESS,Telephony.Sms.PERSON }, // Select body text
+                new String[] { Telephony.Sms.ADDRESS}, // Select body text
                 null,
                 null,
                 Telephony.Sms.Inbox.DEFAULT_SORT_ORDER); // Default sort order
@@ -182,9 +186,11 @@ public class MainActivity extends AppCompatActivity {
 
         if (c.moveToFirst()) {
             for (int i = 0; i < totalSMS; i++) {
-                String sender = c.getString(0);
-                if(!filter(sender)) {
-                    lstSms.add(sender);
+                String senderPhone = c.getString(0);
+                String senderName = getContactName(senderPhone);
+                PhoneRecord phoneRecord = new PhoneRecord(senderPhone,senderName);
+                if(!filter(senderPhone)) {
+                    lstSms.add(phoneRecord);
                 }
                 c.moveToNext();
             }
@@ -226,6 +232,40 @@ public class MainActivity extends AppCompatActivity {
 
     boolean filter(String str){
         return str.matches("[a-z]+.*|[A-Z]+.*");
+    }
+
+    public String getContactName(String phoneNumber) {
+        if(numberToPersonNameCache.isEmpty()) {
+
+            ContentResolver cr = getBaseContext().getContentResolver();
+            Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+            Cursor cursor = cr.query(uri,
+                    new String[]{ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,ContactsContract.CommonDataKinds.Phone.NUMBER}, null, null, null);
+            if (cursor == null) {
+                return "";
+            }
+            Toast.makeText(getApplicationContext(), "total contacts  :"+cursor.getCount(), Toast.LENGTH_SHORT).show();
+
+
+            while (cursor.moveToNext()) {
+                String contactName = "";
+                String contactPhone = "";
+                contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                contactPhone = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                if(contactPhone!=null && contactName !=null) {
+                    numberToPersonNameCache.put(contactPhone, contactName);
+                }
+
+            }
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
+           Toast.makeText(getApplicationContext(), "contacts loaded to cache :"+numberToPersonNameCache.size(), Toast.LENGTH_SHORT).show();
+
+
+
+        }
+        return numberToPersonNameCache.get(phoneNumber);
     }
 
     @Override

@@ -26,33 +26,36 @@
 
     <Switch
         android:id="@+id/sms_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="245dp"
+        android:layout_height="34dp"
         android:layout_marginStart="36dp"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="218dp"
         android:layout_marginBottom="69dp"
-        android:text="Use SMS numbers"
+        android:text="Use numbers from my SMS"
         app:layout_constraintBottom_toTopOf="@+id/phoneNumberText"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.144"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
-        tools:text="Use SMS numbers" />
+        tools:text="Use numbers from my SMS" />
 
     <Switch
         android:id="@+id/calls_switch"
-        android:layout_width="158dp"
-        android:layout_height="25dp"
+        android:layout_width="245dp"
+        android:layout_height="36dp"
         android:layout_marginStart="36dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="217dp"
         android:layout_marginBottom="21dp"
-        android:text="Use latest calls"
+        android:text="Use my latest calls numbers"
         app:layout_constraintBottom_toTopOf="@+id/phoneNumberText"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.13"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sms_switch"
-        tools:text="Use latest calls" />
+        app:layout_constraintVertical_bias="1.0"
+        tools:text="Use my latest calls numbers" />
 
     <Button
         android:id="@+id/SendButton"

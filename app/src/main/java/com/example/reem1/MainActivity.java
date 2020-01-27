@@ -1,7 +1,9 @@
 package com.example.reem1;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -9,6 +11,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import android.provider.CallLog;
 import android.provider.ContactsContract;
@@ -52,6 +55,10 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
             getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
 
+        final int permissionCalls = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG);
+        final int permissionSMS = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS);
+        final int permissionContacts = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
+
 
         ListView lv = (ListView) findViewById(R.id.listView);
 
@@ -69,6 +76,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
+                    if(permissionSMS!= PackageManager.PERMISSION_GRANTED || permissionContacts!=PackageManager.PERMISSION_GRANTED){
+                        Toast.makeText(getApplicationContext(),"feature is disabled - you need to allow sms & contacts permissions for app", Toast.LENGTH_LONG).show();
+                        useSmsSwitch.setChecked(false);
+                        return;
+                    }
                     useCallsSwitch.setChecked(false);
                     Toast.makeText(getApplicationContext(), "Sms numbers lookup activated", Toast.LENGTH_SHORT).show();
                     loadSMSToListView();
@@ -84,6 +96,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
+                    if(permissionCalls!= PackageManager.PERMISSION_GRANTED || permissionContacts!=PackageManager.PERMISSION_GRANTED){
+                        Toast.makeText(getApplicationContext(),"feature is disabled - you need to allow call-log & contacts permissions for app", Toast.LENGTH_LONG).show();
+                        useCallsSwitch.setChecked(false);
+                        return;
+                    }
                     useSmsSwitch.setChecked(false);
                     Toast.makeText(getApplicationContext(), "Call numbers lookup activated", Toast.LENGTH_SHORT).show();
                     loadCallsToListView();

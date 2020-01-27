@@ -11,13 +11,14 @@
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="349dp"
+        android:layout_width="370dp"
         android:layout_height="58dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="36dp"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="100dp"
+        android:layout_marginEnd="30dp"
         android:text="Enter phone number in an international format:"
-        android:textSize="18sp"
+        android:textColor="@color/test"
+        android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@+id/phoneNumberText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -27,7 +28,7 @@
     <Switch
         android:id="@+id/sms_switch"
         android:layout_width="245dp"
-        android:layout_height="34dp"
+        android:layout_height="36dp"
         android:layout_marginStart="36dp"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="218dp"
@@ -60,7 +61,7 @@
     <Button
         android:id="@+id/SendButton"
         android:layout_width="175dp"
-        android:layout_height="74dp"
+        android:layout_height="50dp"
         android:layout_marginStart="117dp"
         android:layout_marginTop="18dp"
         android:layout_marginEnd="127dp"
@@ -76,10 +77,11 @@
         android:id="@+id/ccp"
         android:layout_width="153dp"
         android:layout_height="49dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="36dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="12dp"
         android:layout_marginBottom="38dp"
+        app:ccp_textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/SendButton"
         app:layout_constraintEnd_toStartOf="@+id/phoneNumberText"
         app:layout_constraintStart_toStartOf="parent"
@@ -88,7 +90,7 @@
     <EditText
         android:id="@+id/phoneNumberText"
         android:layout_width="210dp"
-        android:layout_height="64dp"
+        android:layout_height="49dp"
         android:layout_marginStart="12dp"
         android:layout_marginTop="142dp"
         android:layout_marginEnd="20dp"
@@ -96,6 +98,7 @@
         android:ems="10"
         android:hint="Your phone number here"
         android:inputType="phone"
+        android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/SendButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/ccp"
@@ -103,16 +106,16 @@
 
     <ListView
         android:id="@+id/listView"
-        android:layout_width="409dp"
-        android:layout_height="205dp"
-        android:layout_marginStart="1dp"
+        android:layout_width="350dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="30dp"
         android:layout_marginTop="2dp"
-        android:layout_marginEnd="1dp"
+        android:layout_marginEnd="30dp"
         android:background="#85BB79"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/SendButton" >
+        app:layout_constraintTop_toBottomOf="@+id/SendButton">
 
     </ListView>
 

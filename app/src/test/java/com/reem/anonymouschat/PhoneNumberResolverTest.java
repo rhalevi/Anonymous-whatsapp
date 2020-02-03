@@ -1,6 +1,6 @@
-package com.reem.anonymouswhatsapp;
+package com.reem.anonymouschat;
 
-import com.reem.anonymouswhatsapp.PhoneNumberResolver;
+import com.reem.anonymouschat.PhoneNumberResolver;
 
 import org.junit.Test;
 

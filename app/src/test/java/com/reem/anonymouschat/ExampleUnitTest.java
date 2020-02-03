@@ -1,4 +1,4 @@
-package com.reem.anonymouswhatsapp;
+package com.reem.anonymouschat;
 
 import org.junit.Test;
 

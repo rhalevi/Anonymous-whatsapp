@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.reem.anonymouswhatsapp.MainActivity">
+    tools:context="com.reem.anonymouschat.MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -16,9 +16,9 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:logo="@mipmap/anonymouse_whatsapp_chat"
-            app:titleTextAppearance="@style/Toolbar.TitleText"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            app:logo="@mipmap/ic_launcher"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:titleTextAppearance="@style/Toolbar.TitleText" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

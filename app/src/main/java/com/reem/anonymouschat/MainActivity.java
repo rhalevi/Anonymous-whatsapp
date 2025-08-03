@@ -34,6 +34,7 @@ import com.google.i18n.phonenumbers.Phonenumber;
 import com.hbb20.CountryCodePicker;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -198,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
         ContentResolver cr = this.getContentResolver();
 
         Cursor c = cr.query(Telephony.Sms.CONTENT_URI, // Official CONTENT_URI from docs
-                new String[] { Telephony.Sms.ADDRESS}, // Select body text
+                new String[] { Telephony.Sms.ADDRESS,Telephony.Sms.DATE}, // Select body text
                 null,
                 null,
                 Telephony.Sms.Inbox.DEFAULT_SORT_ORDER); // Default sort order
@@ -208,8 +209,10 @@ public class MainActivity extends AppCompatActivity {
         if (c.moveToFirst()) {
             for (int i = 0; i < totalSMS; i++) {
                 String senderPhone = c.getString(0);
+                String date = c.getString(1);
                 String senderName = getContactName(senderPhone);
-                PhoneRecord phoneRecord = new PhoneRecord(senderPhone,senderName);
+
+                PhoneRecord phoneRecord = new PhoneRecord(senderPhone,senderName,date);
                 if(!filter(senderPhone)) {
                     lstSms.add(phoneRecord);
                 }
@@ -228,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
         ContentResolver cr = this.getContentResolver();
 
         Cursor c = cr.query(CallLog.Calls.CONTENT_URI, // Official CONTENT_URI from docs
-                new String[] { CallLog.Calls.NUMBER}, // Select body text
+                new String[] { CallLog.Calls.NUMBER,CallLog.Calls.DATE}, // Select body text
                 null,
                 null,
                 CallLog.Calls.DEFAULT_SORT_ORDER); // Default sort order
@@ -239,9 +242,11 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < totalCalls; i++) {
                 String senderPhone = c.getString(0);
                 String senderName = getContactName(senderPhone);
-                PhoneRecord phoneRecord = new PhoneRecord(senderPhone,senderName);
+                String date = c.getString(1);
+
+                PhoneRecord phoneRecord = new PhoneRecord(senderPhone,senderName,date);
                 if(!filter(senderPhone)) {
-                    lstSms.add(new PhoneRecord(senderPhone,senderName));
+                    lstSms.add(new PhoneRecord(senderPhone,senderName,date));
                 }
                 c.moveToNext();
             }

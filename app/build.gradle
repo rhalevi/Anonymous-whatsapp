@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.reem.anonymouschat"
-        minSdkVersion 19  // Consider increasing to 21 for better support and features
+        minSdkVersion 26  // Consider increasing to 21 for better support and features
         targetSdkVersion 35
         versionCode 1
         versionName "1.0"
